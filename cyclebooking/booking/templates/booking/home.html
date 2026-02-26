@@ -1,0 +1,47 @@
+{% extends 'booking/base.html' %}
+{% block title %}UniCycle — Available Cycles{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>🚲 University Cycle Booking</h1>
+    <p>Book a cycle for your campus commute — fast, easy and affordable.</p>
+    <div class="rate-pill">💰 ₹3 per 10 minutes</div>
+</div>
+
+<div class="container">
+    <div class="page-header" style="margin-top:2rem;">
+        <h1>Available Cycles</h1>
+        <p>{{ cycles.count }} cycle{{ cycles.count|pluralize }} available for booking right now</p>
+    </div>
+
+    {% if cycles %}
+    <div class="card-grid">
+        {% for cycle in cycles %}
+        <div class="cycle-card">
+            {% if cycle.image %}
+                <img src="{{ cycle.image.url }}" alt="{{ cycle.name }}">
+            {% else %}
+                <div class="cycle-card-no-img">🚲</div>
+            {% endif %}
+            <div class="cycle-card-body">
+                <h3>{{ cycle.name }}</h3>
+                <div class="cycle-id">ID: {{ cycle.cycle_id }}</div>
+                <div class="cycle-badges">
+                    <span class="badge badge-green">✅ Available</span>
+                    <span class="badge badge-blue">⚙️ {{ cycle.gear_type }}</span>
+                    <span class="badge badge-yellow">🎨 {{ cycle.color }}</span>
+                </div>
+                <p style="color:var(--muted);font-size:0.85rem;margin:8px 0 14px;line-height:1.5;">{{ cycle.description|truncatewords:18 }}</p>
+                <a href="/cycle/{{ cycle.pk }}/" class="btn btn-primary btn-full">View & Book →</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align:center;padding:4rem 2rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🚲</div>
+        <h2 style="color:var(--muted);">No cycles available right now</h2>
+        <p style="color:var(--muted);margin-top:8px;">Please check back soon or contact the administration.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

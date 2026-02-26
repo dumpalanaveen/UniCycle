@@ -1,0 +1,35 @@
+{% extends 'booking/base.html' %}
+{% block title %}Login — UniCycle{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div style="text-align:center;margin-bottom:1.5rem;">
+            <div style="font-size:3rem;">🚲</div>
+        </div>
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to your UniCycle account</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">Sign In →</button>
+        </form>
+        <p style="text-align:center;margin-top:1.2rem;font-size:0.9rem;color:var(--muted);">
+            Don't have an account? <a href="/register/" style="color:var(--primary);font-weight:600;">Register</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

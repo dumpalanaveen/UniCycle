@@ -1,0 +1,81 @@
+{% extends 'booking/base.html' %}
+{% block title %}Return Successful — UniCycle{% endblock %}
+{% block content %}
+<div class="container" style="max-width:520px;">
+    <div class="card" style="text-align:center;">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.2rem;">✅</div>
+        
+        <h1 style="font-size:1.7rem;font-weight:900;color:#065f46;">Cycle Returned!</h1>
+        <p style="color:var(--muted);margin:8px 0 2rem;">Thank you for returning the cycle responsibly.</p>
+
+        <!-- Return Stats -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:2rem;">
+            <div style="background:#f0f4ff;border-radius:12px;padding:14px;">
+                <div style="font-size:1.5rem;">⏱️</div>
+                <div style="font-size:1.2rem;font-weight:800;color:var(--primary);">{{ booking.actual_duration_minutes }}</div>
+                <div style="font-size:0.75rem;color:var(--muted);">mins used</div>
+            </div>
+            <div style="background:#f0fdf4;border-radius:12px;padding:14px;">
+                <div style="font-size:1.5rem;">💳</div>
+                <div style="font-size:1.2rem;font-weight:800;color:var(--secondary);">
+                    ₹{% if booking.refund_amount %}{{ booking.refund_amount }}{% else %}0{% endif %}
+                </div>
+                <div style="font-size:0.75rem;color:var(--muted);">refund</div>
+            </div>
+            <div style="background:#fff7ed;border-radius:12px;padding:14px;">
+                <div style="font-size:1.5rem;">🚲</div>
+                <div style="font-size:1.2rem;font-weight:800;color:var(--accent);">Free</div>
+                <div style="font-size:0.75rem;color:var(--muted);">now available</div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div style="background:#f8fafc;border-radius:12px;padding:1.2rem;text-align:left;margin-bottom:1.5rem;">
+            <h3 style="font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">Return Details</h3>
+            <table style="width:100%;">
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Cycle</td>
+                    <td style="font-weight:700;text-align:right;">{{ booking.cycle.name }} ({{ booking.cycle.cycle_id }})</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Booking ID</td>
+                    <td style="font-weight:700;text-align:right;">#{{ booking.id }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Returned at</td>
+                    <td style="font-weight:700;text-align:right;">{{ booking.returned_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Booked for</td>
+                    <td style="font-weight:700;text-align:right;">{{ booking.duration_minutes }} mins</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Actual usage</td>
+                    <td style="font-weight:700;text-align:right;color:var(--secondary);">{{ booking.actual_duration_minutes }} mins</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Amount paid</td>
+                    <td style="font-weight:700;text-align:right;">₹{{ booking.total_cost }}</td>
+                </tr>
+                {% if booking.refund_amount and booking.refund_amount > 0 %}
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Refund</td>
+                    <td style="font-weight:900;text-align:right;color:var(--secondary);">₹{{ booking.refund_amount }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        {% if booking.refund_amount and booking.refund_amount > 0 %}
+        <div style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:12px;padding:14px 16px;margin-bottom:1.5rem;">
+            <p style="color:#065f46;font-weight:700;">💸 Refund of ₹{{ booking.refund_amount }} will be processed to your original payment method within 2–3 business days.</p>
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:12px;">
+            <a href="/" class="btn btn-outline" style="flex:1;">🏠 Home</a>
+            <a href="/my-bookings/" class="btn btn-primary" style="flex:1;">📋 My Bookings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

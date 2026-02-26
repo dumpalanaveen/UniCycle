@@ -1,0 +1,84 @@
+{% extends 'booking/base.html' %}
+{% block title %}My Profile — UniCycle{% endblock %}
+{% block content %}
+<div class="container" style="max-width:700px;">
+    <div class="page-header">
+        <h1>👤 My Profile</h1>
+        <p>Update your personal information</p>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--border);">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="Avatar" class="profile-avatar">
+            {% else %}
+                <div class="profile-avatar-placeholder">
+                    {{ user.first_name|first|default:user.username|first|upper }}
+                </div>
+            {% endif %}
+            <div>
+                <h2 style="font-size:1.4rem;font-weight:800;">{{ user.get_full_name|default:user.username }}</h2>
+                <p style="color:var(--muted);">{{ user.email }}</p>
+                {% if profile.roll_number %}<span class="badge badge-blue">🎓 {{ profile.roll_number }}</span>{% endif %}
+                {% if profile.department %}<span class="badge badge-blue" style="margin-left:6px;">{{ profile.department }}</span>{% endif %}
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" value="{{ user.email }}">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input type="text" name="roll_number" class="form-control" value="{{ profile.roll_number }}">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ profile.phone }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="department" class="form-control" value="{{ profile.department }}">
+            </div>
+            <div class="form-group">
+                <label>Profile Photo</label>
+                <input type="file" name="avatar" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+        </form>
+    </div>
+
+    <!-- Quick Stats -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem;">
+        <div class="card" style="padding:1.2rem;text-align:center;">
+            <div style="font-size:2rem;">📋</div>
+            <div style="font-size:1.5rem;font-weight:800;color:var(--primary);">{{ user.booking_set.count }}</div>
+            <div style="font-size:0.85rem;color:var(--muted);">Total Bookings</div>
+        </div>
+        <div class="card" style="padding:1.2rem;text-align:center;">
+            <div style="font-size:2rem;">✅</div>
+            <div style="font-size:1.5rem;font-weight:800;color:var(--secondary);">{{ user.booking_set.filter.count }}</div>
+            <div style="font-size:0.85rem;color:var(--muted);">Confirmed</div>
+        </div>
+        <div class="card" style="padding:1.2rem;text-align:center;">
+            <div style="font-size:2rem;">🚲</div>
+            <div style="font-size:1.5rem;font-weight:800;color:var(--accent);">Active</div>
+            <div style="font-size:0.85rem;color:var(--muted);">Member</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

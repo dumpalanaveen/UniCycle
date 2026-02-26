@@ -1,0 +1,89 @@
+{% extends 'booking/base.html' %}
+{% block title %}My Bookings — UniCycle{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📋 My Bookings</h1>
+        <p>All your cycle booking history</p>
+    </div>
+
+    {% if bookings %}
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+        {% for booking in bookings %}
+        <div class="card" style="padding:1.5rem;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+                <!-- Left: cycle info -->
+                <div style="display:flex;gap:1rem;align-items:center;">
+                    {% if booking.cycle.image %}
+                        <img src="{{ booking.cycle.image.url }}" alt="{{ booking.cycle.name }}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;flex-shrink:0;">
+                    {% else %}
+                        <div style="width:70px;height:70px;border-radius:10px;background:linear-gradient(135deg,#dbeafe,#e0e7ff);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🚲</div>
+                    {% endif %}
+                    <div>
+                        <h3 style="font-size:1rem;font-weight:700;">{{ booking.cycle.name }}</h3>
+                        <p style="color:var(--muted);font-size:0.82rem;">ID: {{ booking.cycle.cycle_id }} &nbsp;·&nbsp; Booking #{{ booking.id }}</p>
+                        <p style="color:var(--muted);font-size:0.82rem;">📅 {{ booking.booking_date|date:"d M Y, H:i" }}</p>
+                        <p style="font-size:0.82rem;margin-top:3px;">
+                            Booked: <strong>{{ booking.duration_minutes }} mins</strong>
+                            {% if booking.actual_duration_minutes %}
+                                &nbsp;→&nbsp; Used: <strong style="color:var(--secondary);">{{ booking.actual_duration_minutes }} mins</strong>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: cost + status -->
+                <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                    <div style="font-size:1.3rem;font-weight:900;color:var(--primary);">₹{{ booking.total_cost }}</div>
+                    {% if booking.refund_amount and booking.refund_amount > 0 %}
+                        <div style="font-size:0.82rem;color:var(--secondary);font-weight:600;">Refund: ₹{{ booking.refund_amount }}</div>
+                    {% endif %}
+                    <div>
+                        {% if booking.status == 'pending_payment' %}<span style="color:#d97706;font-weight:700;">⏳ Pending Payment</span>
+                        {% elif booking.status == 'confirmed' %}<span style="color:#059669;font-weight:700;">✅ Confirmed</span>
+                        {% elif booking.status == 'active' %}<span style="color:#2563eb;font-weight:700;">🚲 Active</span>
+                        {% elif booking.status == 'completed' %}<span style="color:#64748b;font-weight:700;">🏁 Completed</span>
+                        {% else %}<span style="color:#ef4444;font-weight:700;">❌ Cancelled</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIN + Return button for active bookings -->
+            {% if booking.status == 'confirmed' or booking.status == 'active' %}
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+                <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:14px;">
+                    <span style="color:rgba(255,255,255,0.75);font-size:0.8rem;">🔐 Unlock PIN</span>
+                    <span style="color:white;font-size:1.6rem;font-weight:900;font-family:monospace;letter-spacing:0.25em;">{{ booking.unlock_pin }}</span>
+                </div>
+                <a href="/booking/{{ booking.id }}/return/" class="btn btn-danger" style="display:flex;align-items:center;gap:6px;">
+                    🔄 Return Cycle
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Return info for completed -->
+            {% if booking.status == 'completed' and booking.returned_at %}
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);background:#f0fdf4;border-radius:10px;padding:12px 16px;">
+                <p style="font-size:0.85rem;color:#065f46;font-weight:600;">
+                    🏁 Returned at: {{ booking.returned_at|date:"d M Y, H:i" }}
+                    &nbsp;|&nbsp; Used: {{ booking.actual_duration_minutes }} mins
+                    {% if booking.refund_amount and booking.refund_amount > 0 %}
+                    &nbsp;|&nbsp; Refund: ₹{{ booking.refund_amount }}
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card" style="text-align:center;padding:4rem 2rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">📋</div>
+        <h2 style="color:var(--muted);">No bookings yet</h2>
+        <p style="color:var(--muted);margin:8px 0 1.5rem;">Start exploring available cycles and make your first booking!</p>
+        <a href="/" class="btn btn-primary">Browse Cycles</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

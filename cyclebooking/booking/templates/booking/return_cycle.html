@@ -1,0 +1,69 @@
+{% extends 'booking/base.html' %}
+{% block title %}Return Cycle — UniCycle{% endblock %}
+{% block content %}
+<div class="container" style="max-width:560px;">
+    <div class="card">
+        <div style="text-align:center;margin-bottom:2rem;">
+            <div style="font-size:3.5rem;">🔄</div>
+            <h1 style="font-size:1.6rem;font-weight:800;margin-top:10px;">Return Your Cycle</h1>
+            <p style="color:var(--muted);">You're returning <strong>{{ booking.cycle.name }}</strong> ({{ booking.cycle.cycle_id }})</p>
+        </div>
+
+        <!-- Usage Summary -->
+        <div style="background:#f8fafc;border-radius:14px;padding:1.4rem;margin-bottom:1.5rem;">
+            <h3 style="font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;">Return Summary</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="background:white;border-radius:10px;padding:12px;border:2px solid var(--border);text-align:center;">
+                    <div style="font-size:1.5rem;margin-bottom:4px;">📅</div>
+                    <div style="font-size:0.78rem;color:var(--muted);">Booked Duration</div>
+                    <div style="font-size:1.2rem;font-weight:800;">{{ booking.duration_minutes }} <span style="font-size:0.8rem;font-weight:400;color:var(--muted);">mins</span></div>
+                </div>
+                <div style="background:white;border-radius:10px;padding:12px;border:2px solid var(--secondary);text-align:center;">
+                    <div style="font-size:1.5rem;margin-bottom:4px;">⏱️</div>
+                    <div style="font-size:0.78rem;color:var(--muted);">Actual Usage</div>
+                    <div style="font-size:1.2rem;font-weight:800;color:var(--secondary);">~{{ used_mins }} <span style="font-size:0.8rem;font-weight:400;color:var(--muted);">mins</span></div>
+                </div>
+                <div style="background:white;border-radius:10px;padding:12px;border:2px solid var(--border);text-align:center;">
+                    <div style="font-size:1.5rem;margin-bottom:4px;">💰</div>
+                    <div style="font-size:0.78rem;color:var(--muted);">Amount Paid</div>
+                    <div style="font-size:1.2rem;font-weight:800;">₹{{ booking.total_cost }}</div>
+                </div>
+                <div style="background:white;border-radius:10px;padding:12px;border:2px solid {% if potential_refund > 0 %}#10b981{% else %}var(--border){% endif %};text-align:center;">
+                    <div style="font-size:1.5rem;margin-bottom:4px;">{% if potential_refund > 0 %}💸{% else %}✅{% endif %}</div>
+                    <div style="font-size:0.78rem;color:var(--muted);">Est. Cost</div>
+                    <div style="font-size:1.2rem;font-weight:800;color:{% if potential_refund > 0 %}var(--secondary){% else %}var(--text){% endif %};">₹{{ estimated_cost }}</div>
+                </div>
+            </div>
+
+            {% if potential_refund > 0 %}
+            <div style="margin-top:14px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:12px;padding:14px 16px;text-align:center;">
+                <p style="font-size:0.85rem;color:#065f46;font-weight:600;">🎉 You returned early!</p>
+                <p style="font-size:1.3rem;font-weight:900;color:#059669;">Refund: ₹{{ potential_refund }}</p>
+                <p style="font-size:0.78rem;color:#065f46;">Will be credited within 2–3 business days</p>
+            </div>
+            {% else %}
+            <div style="margin-top:14px;background:#f0f4ff;border-radius:12px;padding:12px 16px;text-align:center;">
+                <p style="font-size:0.85rem;color:var(--primary);">No refund — full booking time was used.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="background:#fef3c7;border-radius:12px;padding:12px 16px;margin-bottom:1.5rem;border-left:4px solid var(--accent);">
+            <p style="font-size:0.85rem;color:#92400e;font-weight:600;">⚠️ Before confirming:</p>
+            <ul style="font-size:0.82rem;color:#92400e;margin-top:6px;padding-left:1.2rem;line-height:1.8;">
+                <li>Park the cycle at the designated area</li>
+                <li>Lock the cycle properly</li>
+                <li>Make sure the PIN lock is engaged</li>
+            </ul>
+        </div>
+
+        <form method="POST" style="display:flex;gap:12px;">
+            {% csrf_token %}
+            <a href="/my-bookings/" class="btn btn-outline" style="flex:1;text-align:center;">← Cancel</a>
+            <button type="submit" class="btn btn-danger" style="flex:2;font-size:1rem;padding:13px;">
+                🔄 Confirm Return
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

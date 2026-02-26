@@ -1,0 +1,71 @@
+{% extends 'booking/base.html' %}
+{% block title %}Booking Confirmed! — UniCycle{% endblock %}
+{% block content %}
+<div class="container" style="max-width:540px;">
+    <div class="card" style="text-align:center;">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.2rem;">✅</div>
+
+        <h1 style="font-size:1.7rem;font-weight:900;color:#065f46;">Booking Confirmed!</h1>
+        <p style="color:var(--muted);margin:8px 0 2rem;">Your cycle is ready. Use the PIN below to unlock it.</p>
+
+        <!-- PIN Display -->
+        <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb,#7c3aed);border-radius:16px;padding:2rem;margin-bottom:2rem;color:white;">
+            <p style="font-size:0.82rem;opacity:0.8;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.12em;">🔐 Cycle Unlock PIN</p>
+            <div class="pin-display">
+                {% for digit in booking.unlock_pin %}
+                <div class="pin-digit" style="background:rgba(255,255,255,0.2);">{{ digit }}</div>
+                {% endfor %}
+            </div>
+            <p style="font-size:0.78rem;opacity:0.75;margin-top:12px;">Enter this PIN on the cycle's digital lock keypad</p>
+        </div>
+
+        <!-- Booking Details -->
+        <div style="background:#f8fafc;border-radius:12px;padding:1.2rem;text-align:left;margin-bottom:1.5rem;">
+            <h3 style="font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">📋 Booking Details</h3>
+            <table style="width:100%;">
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Booking ID</td>
+                    <td style="font-weight:700;text-align:right;">#{{ booking.id }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Cycle</td>
+                    <td style="font-weight:700;text-align:right;">{{ booking.cycle.name }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Cycle ID</td>
+                    <td style="font-weight:700;text-align:right;font-family:monospace;">{{ booking.cycle.cycle_id }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Duration</td>
+                    <td style="font-weight:700;text-align:right;">{{ booking.duration_minutes }} minutes</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Amount Paid</td>
+                    <td style="font-weight:900;text-align:right;color:var(--secondary);">₹{{ booking.total_cost }}</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted);font-size:0.85rem;padding:5px 0;">Payment Ref</td>
+                    <td style="font-weight:600;text-align:right;font-family:monospace;font-size:0.8rem;">{{ booking.payment_reference }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Instructions -->
+        <div style="background:#fff7ed;border-radius:12px;padding:14px 16px;margin-bottom:1.5rem;border-left:4px solid #f59e0b;text-align:left;">
+            <p style="font-weight:700;color:#92400e;margin-bottom:6px;">📍 How to use:</p>
+            <ol style="color:#92400e;font-size:0.85rem;padding-left:1.2rem;line-height:1.9;">
+                <li>Find cycle <strong>{{ booking.cycle.cycle_id }}</strong> at the cycle stand</li>
+                <li>Enter PIN <strong style="font-family:monospace;font-size:1rem;letter-spacing:0.15em;">{{ booking.unlock_pin }}</strong> on the lock</li>
+                <li>Enjoy your ride for up to {{ booking.duration_minutes }} minutes</li>
+                <li>When done, return to the stand and click <strong>Return Cycle</strong></li>
+            </ol>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="/" class="btn btn-outline" style="flex:1;min-width:120px;">🏠 Home</a>
+            <a href="/my-bookings/" class="btn btn-primary" style="flex:1;min-width:120px;">📋 My Bookings</a>
+            <a href="/booking/{{ booking.id }}/return/" class="btn btn-danger" style="flex:1;min-width:120px;">🔄 Return Cycle</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
